@@ -6,7 +6,17 @@
     <title>Unity Web Player | DotDash</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
+  <meta name="app.hypergames.hypersdk" content="not-installed">
+<script>window.__HYPER_SDK_VERSION__ = "not-installed";</script>
+
+<script>
+window._HYPER_LOADER_CONFIG = {
+    backgroundImage: "TemplateData/gameBgPoster.jpg"
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
   <body>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=1080 height=1920 tabindex="-1"></canvas>
