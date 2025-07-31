@@ -1,137 +1,1178 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | DotDash</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  <meta name="app.hypergames.hypersdk" content="not-installed">
-<script>window.__HYPER_SDK_VERSION__ = "not-installed";</script>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet" />
+  <title>DotDash | Hyper</title>
+
+  <!-- Google Tag Manager -->
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-MDHVN9M");
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @font-face {
+      font-family: "Wonder Boys";
+      src: url("TemplateData/Wonder Boys - Personal Use.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background-color: #0c0222;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.3s ease;
+      color: white;
+      font-family: "Wonder Boys", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-color: #0d0b1d96;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 1.5rem;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 420px;
+      height: 50svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+
+    .logo .games {
+      background: linear-gradient(to right,
+          #b347f2,
+          #ff6363,
+          #fbb034,
+          #3bd1ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bottom-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .loading-text {
+      font-weight: bold;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 16px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #6c53e8;
+      border-radius: 0px;
+      position: relative;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar-border {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background-color: #4e3cc2;
+      width: 0%;
+      transition: width 0.3s ease;
+      z-index: 1;
+    }
+
+    .tip-box {
+      background: #ffffff14;
+      padding: 1rem;
+      border-radius: 16px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.4;
+      width: 100%;
+      position: relative;
+    }
+
+    .pointer {
+      position: absolute;
+      bottom: -8px;
+      left: -8px;
+    }
+
+    .hide {
+      visibility: hidden;
+    }
+
+    .glint {
+      opacity: 0;
+      transition: opacity 2s ease;
+      display: inline-block;
+      position: absolute;
+      width: 6px;
+      height: 12px;
+      background-color: #8a76ed;
+      border-radius: 100%;
+      transform: rotate(58deg);
+      left: 6px;
+      top: 0px;
+      z-index: 2;
+    }
+
+    .glint.visible {
+      opacity: 1;
+    }
+
+    canvas {
+      opacity: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .container {
+      transition: opacity 0.25s ease;
+    }
+
+    .unity-loaded canvas {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .unity-loaded .container {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* connection lost connection-lost-modal */
+    /* Backdrop overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    /* connection-lost-Modal box */
+    .connection-lost-modal {
+      background-color: #4e3cc2;
+      color: white;
+      padding: 24px 24px 32px 24px;
+      border-radius: 25px;
+      width: 343px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .connection-lost-modal .icon {
+      font-size: 2.625rem;
+      margin-bottom: 16px;
+    }
+
+    .connection-lost-modal h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .connection-lost-modal p {
+      font-size: 16px;
+      color: #eee;
+      margin-bottom: 30px;
+      font-family: "Nunito", sans-serif;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      position: relative;
+      font-size: 1.25rem;
+      font-weight: bold;
+      padding: 13px 16px;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 10px 0 #4e39ad;
+      transition: all 0.15s ease;
+      flex: 1;
+      font-family: "Wonder Boys", sans-serif;
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 1;
+      text-shadow: 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+      padding-top: 15px;
+      padding-bottom: 11px;
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
+      transform: translateY(0);
+      position: relative;
+      top: 8px;
+    }
+
+    .retry-later {
+      background-color: #fff;
+      color: #5c3bee;
+      box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 0 #bbb;
+    }
+
+    .retry {
+      border: 2px solid #8a76ed;
+      border-left-width: 0;
+      border-right-width: 0;
+      background-color: #7c5cf5;
+      color: #fff;
+      box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 0 #4e39ad;
+      position: relative;
+    }
+
+    .retry::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 8px;
+      width: 8px;
+      height: 16px;
+      background: #ffffff33;
+      border-radius: 50%;
+      transform: rotate(-120deg);
+      z-index: 0;
+    }
+
+    .retry-later::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 8px;
+      width: 8px;
+      height: 16px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      transform: rotate(-120deg);
+      z-index: 0;
+    }
+
+    /* Switch to mobile modal */
+    .switch-to-mobile-modal {
+      background-color: transparent;
+      color: white;
+      padding: 24px 24px 32px 24px;
+      border-radius: 25px;
+      max-width: 600px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .switch-to-mobile-modal h1 {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      margin-top: 21px;
+    }
+
+    .switch-to-mobile-modal p {
+      font-size: 1.625rem;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .switch-to-mobile-modal .exit-btn {
+      max-width: fit-content;
+      margin: 0 auto;
+    }
+
+    .switch-to-mobile-modal .auto-exit-container {
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(2.5px);
+      display: flex;
+      padding: 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 12px;
+      margin-right: auto;
+      margin-left: auto;
+      width: fit-content;
+      min-width: 165px;
+      font-size: 0.875rem;
+    }
+
+    #progressBarContainerEl {
+      transition: border-bottom 0.3s ease;
+      border-bottom: 4px solid transparent;
+    }
+  </style>
+
+  <meta name="app.hypergames.hypersdk" content="1.0.0" />
+  <script>
+    window.__HYPER_SDK_VERSION__ = "1.0.0";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
 
 <script>
 window._HYPER_LOADER_CONFIG = {
     backgroundImage: "TemplateData/gameBgPoster.jpg"
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1080 height=1920 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+
+<body>
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDHVN9M" height="0" width="0"
+      style="display: none; visibility: hidden"></iframe>
+  </noscript>
+
+  <canvas id="unity-canvas"></canvas>
+  <div class="container">
+    <div class="content">
+      <div class="logo">
+        <img src="TemplateData/hyper-games-logo.svg" alt="Hyper games" />
+      </div>
+      <div class="bottom-content">
+        <div class="loading-text">INITIALIZING GAME</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill">
+            <div class="progress-bar-border"></div>
+            <span class="glint"></span>
+          </div>
+        </div>
+        <div class="tip-box">
+          <span class="tip-content">Every second is a chance. Make it count!</span>
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+            class="pointer">
+            <g clip-path="url(#clip0_5673_25184)">
+              <path
+                d="M26.4195 17.3826C26.695 17.1085 26.9139 16.7709 27.0516 16.3923C27.2861 15.7471 27.2275 15.0433 26.9342 14.3982L26.8756 14.2809C26.5824 13.6944 26.0545 13.2252 25.4094 12.9906C25.3006 12.9511 25.19 12.9205 25.0784 12.8974C25.3589 12.4369 25.5267 11.9221 25.5267 11.4071C25.5267 10.7034 25.2334 9.99954 24.7642 9.53038C24.4123 9.17847 23.9431 8.94388 23.4153 8.82662L27.6966 4.54528C28.1658 4.01742 28.4591 3.3723 28.4591 2.66855C28.4591 1.96479 28.2245 1.26098 27.6966 0.791807C26.641 -0.263854 24.9988 -0.263854 23.9431 0.791807L12.2722 12.4628C10.2781 12.1696 9.28108 12.9907 7.99083 14.2809L7.9322 14.3396C6.17279 16.099 6.11409 18.6795 6.11409 19.5006L4.64789 20.9668C3.70949 21.8465 3.70949 23.3127 4.64789 24.2511L12.1549 31.6995C12.6241 32.1686 13.2106 32.4032 13.7971 32.4032C14.3836 32.4032 14.97 32.1686 15.4392 31.6995L16.964 30.2333C19.7792 29.8227 20.4243 29.2362 23.2981 26.3625C24.8229 24.8376 26.1718 22.6676 26.5238 22.0811C26.5283 22.0784 26.5326 22.0755 26.5371 22.0728C27.7888 21.3904 28.2619 19.8686 27.6381 18.6209C27.3671 18.0544 26.9303 17.6333 26.4195 17.3826ZM20.4829 18.2104C21.5386 17.7412 22.301 16.275 22.1251 15.102L23.9432 14.2223C24.2364 14.0464 24.647 14.0464 24.9989 14.1637C25.3508 14.281 25.644 14.5156 25.8199 14.8674L25.8786 14.9848C25.9656 15.1299 26.0095 15.3037 26.0175 15.485C26.0118 15.6329 25.984 15.7827 25.9373 15.9232C25.8199 16.2751 25.5854 16.5683 25.2335 16.7442L24.1192 17.272C23.9968 17.3209 23.9055 17.411 23.8487 17.5204L18.6072 20.0617C17.9636 20.2525 17.2776 19.9518 16.964 19.3247L16.9054 19.2073C16.8468 19.09 16.7881 19.0314 16.7881 18.9141C18.3716 18.7382 19.7206 18.445 20.4829 18.2104ZM18.8995 21.2601L24.7056 18.445C25.1075 18.2106 25.5665 18.225 25.952 18.4113C26.1924 18.5683 26.3914 18.7666 26.5238 19.0315C26.6997 19.3834 26.6997 19.7939 26.5824 20.1457C26.4651 20.5563 26.2305 20.8495 25.8199 21.0255C25.7375 21.0666 25.6843 21.1083 25.6394 21.1698L20.131 23.8406C19.4273 24.2511 18.5475 23.8992 18.1957 23.1955C17.7851 22.4917 18.137 21.6119 18.8995 21.2601ZM23.8846 10.2928C24.1778 10.586 24.3537 10.9379 24.3537 11.3485C24.3537 11.759 24.2364 12.1109 23.9432 12.4041L23.7672 12.5801L22.7116 13.4012C22.6799 13.4249 22.6517 13.4521 22.6266 13.4816L21.1868 14.1636C21.1732 14.1718 21.1605 14.1804 21.1477 14.189C20.7357 13.8469 20.1178 13.5324 19.1928 13.3425C19.0788 13.3198 18.9456 13.2953 18.7967 13.2694L21.8319 10.2342C22.1252 9.99961 22.4771 9.88228 22.829 9.88228C23.2394 9.88228 23.5913 9.99961 23.8846 10.2928ZM24.7643 1.61288C25.0575 1.3783 25.4094 1.20235 25.8199 1.20235C26.2305 1.20235 26.5824 1.3783 26.8756 1.61288C27.1102 1.9061 27.2861 2.25801 27.2861 2.66855C27.2861 3.07908 27.1102 3.43099 26.7583 3.66558L21.0107 9.41312L20.9521 9.47175L17.4332 12.9906C17.4147 13.0092 17.3981 13.0287 17.3825 13.0486C16.333 12.896 15.0574 12.7264 13.8639 12.5715L24.7643 1.61288ZM22.477 25.4827C19.6032 28.4151 19.2513 28.7084 16.6121 29.0603C16.4948 29.1189 16.3776 29.1776 16.2602 29.2949L14.6181 30.8784C14.1489 31.2889 13.4451 31.3475 12.9759 30.8784L5.46897 23.3714C4.9998 22.9023 4.9998 22.1984 5.46897 21.7293L7.16975 20.0871C7.28708 19.9698 7.34571 19.7939 7.34571 19.6179C7.34571 19.6179 7.11112 16.9201 8.75328 15.1607C10.1022 13.8704 10.7473 13.3425 12.4481 13.6358H12.5068L13.5038 13.7531C13.592 13.7678 13.6728 13.7604 13.7454 13.7364C15.8789 14.0057 18.0928 14.321 19.0167 14.5156C20.131 14.7502 20.7762 15.1607 20.8348 15.7472C20.8547 15.9062 20.8264 16.0717 20.7611 16.2305C20.7035 16.3476 20.6363 16.4592 20.5615 16.5611C20.4199 16.7339 20.2323 16.8816 20.0136 16.9788C18.0783 17.8585 12.3307 18.1518 11.0404 17.6239C10.7472 17.5066 10.3953 17.6826 10.278 17.9759C10.1607 18.2691 10.3366 18.621 10.6299 18.7383C11.1578 18.9729 12.272 19.0902 13.5623 19.0902C14.2156 19.0902 14.9101 19.0652 15.6032 19.0157C15.6395 19.2616 15.6991 19.4931 15.7909 19.6766L15.8496 19.794C16.1619 20.4186 16.6826 20.8601 17.2723 21.0863C16.7456 21.846 16.6452 22.8514 17.0812 23.7234C17.5503 24.6618 18.4887 25.1896 19.4858 25.1896C19.8963 25.1896 20.2482 25.0723 20.6001 24.955L24.424 23.101C23.881 23.8765 23.1958 24.7639 22.477 25.4827Z"
+                fill="white" />
+            </g>
+            <defs>
+              <clipPath id="clip0_5673_25184">
+                <rect width="32" height="32" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
         </div>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">DotDash</div>
+    </div>
+  </div>
+
+  <!-- connection lost modal -->
+  <div class="overlay" id="connection-lost-modal-overlay">
+    <div class="connection-lost-modal">
+      <div class="icon">
+        <img alt="" src="TemplateData/no-wifi.svg" />
+      </div>
+      <h1>Connection Lost</h1>
+      <p>Please check your internet connection<br />and try again.</p>
+      <div class="button-container">
+        <button class="btn retry-later" onclick="retryLater()">
+          <span>Retry Later</span>
+        </button>
+        <button class="btn retry" onclick="retryNow()">
+          <span>Retry</span>
+        </button>
       </div>
     </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
+  </div>
+  <!-- wrong platform modal -->
+  <div class="overlay" id="switch-to-mobile-modal-overlay">
+    <div class="switch-to-mobile-modal">
+      <div class="icon">
+        <img alt="" src="TemplateData/switch-desktop-mobile.svg" id="wrong-platform-img" />
+      </div>
+      <h1 id="wrong-plaform-heading">switch to Mobile to play</h1>
+      <p id="wrong-plaform-subhead">This game only works on mobile</p>
+      <div class="auto-exit-container" id="platform-auto-exit-wrapper">
+        <img src="TemplateData/clock.svg" alt="clock" />
+        <span>Auto exits in</span>
+        <span id="platform-auto-exit-timer"></span>
+      </div>
+      <div class="button-container">
+        <button class="btn retry exit-btn" onclick="onWrongPlatformGameExit()">
+          <span>Exit</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- wrong orientation modal -->
+  <div class="overlay" id="switch-orientation-modal-overlay" style="display: flex; align-items: end">
+    <div class="switch-to-mobile-modal">
+      <div class="icon">
+        <img alt="" src="" id="rotate-screen-img" />
+      </div>
+      <h1>Rotate your device</h1>
+      <p>
+        This game only works in
+        <span id="accepted-orientation"></span> orientation
+      </p>
+      <div class="auto-exit-container" id="orientation-auto-exit-wrapper">
+        <img src="TemplateData/clock.svg" alt="clock" />
+        <span id="timer-text">Auto exits in</span>
+        <span id="wrong-orientation-exit-timer"></span>
+      </div>
+      <div class="button-container" id="orientation-exit-cta-wrapper">
+        <button class="btn retry exit-btn" onclick="onWrongOrientationGameExit()">
+          <span>Exit</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+  <script src="Build/webgl version.loader.js"></script>
+
+  <script>
+    const config = window._HYPER_LOADER_CONFIG || {}; // {window._HYPER_LOADER_CONFIG} Referenced in a Replace function in Unity
+    const hintInterval = 5000;
+    const backgroundImageUrl = config.backgroundImage || null;
+    const hasBackgroundImage = !!backgroundImageUrl;
+
+    document.querySelector(".progress-bar-fill").style.width = "0%";
+
+    // if backgroundimage exists
+    if (hasBackgroundImage) {
+      document.body.style.backgroundImage = `url('${backgroundImageUrl}')`;
+      document.querySelector(".logo").classList.add("hide");
+    }
+
+    // loading text animation
+    const loadingTextEl = document.querySelector(".loading-text");
+    const baseText = "INITIALIZING GAME";
+    let dotCount = 0;
+
+    window._HYPER_DOT_INTERVAL_ID = setInterval(() => {
+      dotCount = (dotCount + 1) % 4;
+      loadingTextEl.innerText = baseText + ".".repeat(dotCount);
+    }, 500);
+
+    // Unity resolution helper for mobile screens
+    // if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    //   // Mobile device style: fill the whole browser client area with the game canvas:
+    //   var meta = document.createElement('meta');
+    //   meta.name = 'viewport';
+    //   meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+    //   document.getElementsByTagName('head')[0].appendChild(meta);
+
+    //   var unitycanvas = document.querySelector("#unity-canvas");
+    //   unitycanvas.style.width = "100%";
+    //   unitycanvas.style.height = "100%";
+    //   unitycanvas.style.position = "fixed";
+
+    //   document.body.style.textAlign = "left";
+    // }
+
+    // else {
+    //   // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+    //   canvas.style.width = "1080px";
+    //   canvas.style.height = "1920px";
+    // }
+
+    function extractPathSegment(url, segmentIndex) {
+      try {
+        const pathname = new URL(url).pathname;
+        const segments = pathname.split("/").filter(Boolean);
+        return segments[segmentIndex] || null;
+      } catch (e) {
+        return null;
       }
+    }
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/webgl version.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/webgl version.data",
-        frameworkUrl: buildUrl + "/webgl version.framework.js",
-        codeUrl: buildUrl + "/webgl version.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "UnikGames",
-        productName: "DotDash",
-        productVersion: "1.0.0",
-        showBanner: unityShowBanner,
+    function checkIsMobile() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+      return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|kindle|silk|infinix|tecno|itel/i.test(
+        ua
+      );
+    }
+
+    const currentUrl = window.location.href;
+    const extractedSegment = extractPathSegment(currentUrl, 0);
+    let hasGameInitBeenStopped = false;
+    let hasGameLoaded = false;
+    let hasGameStarted = false;
+    let isGameWindowVisible = true;
+
+    const unityCanvasEl = document.getElementById("unity-canvas");
+    const bottomContentEl = document.querySelector(".bottom-content");
+    const CUSTOM_EVENTS = {
+      SDK_CONNECTION_FAILED: "sdk_ConnectionFailed",
+      SDK_WRONG_PLATFORM: "sdk_WrongPlatform",
+      SDK_WRONG_ORIENTATION: "sdk_WrongOrientation",
+      SDK_SESSION_TIMEOUT: "sdk_SessionTimedOut",
+    };
+    const SCREEN_ORIENTATIONS = {
+      PORTRAIT_PRIMARY: "portrait-primary",
+      PORTRAIT_SECONDARY: "portrait-secondary",
+      LANDSCAPE_PRIMARY: "landscape-primary",
+      LANDSCAPE_SECONDARY: "landscape-secondary",
+    };
+    const ORIENTATIONS = {
+      LANDSCAPE: "landscape",
+      PORTRAIT: "portrait",
+    };
+    const PLATFORMS = {
+      DESKTOP: "desktop",
+      MOBILE: "mobile",
+    };
+    const isMobile = checkIsMobile();
+    const isDesktop = !isMobile;
+    const platformTimerEl = document.getElementById(
+      "platform-auto-exit-timer"
+    );
+    const urlParams = new URLSearchParams(window.location.search);
+    const isBattleGame = urlParams.get("pvp") === "true";
+    const acceptedScreenOrientation = "portrait"; // "portrait"|"landscape"|""
+    const acceptedPlatform = ""; // "mobile"|"desktop"| ""
+    const currentPlatform = isDesktop ? PLATFORMS.DESKTOP : PLATFORMS.MOBILE;
+    const isOnCorrectPlatform = !acceptedPlatform
+      ? true
+      : currentPlatform === acceptedPlatform;
+
+    async function fetchTips() {
+      if (!isOnCorrectPlatform) return;
+      try {
+        const hintsResponse = await fetch(
+          `https://api.dev.hypergames.app/games/${extractedSegment}/hints`
+        );
+        const hintRecords = await hintsResponse.json();
+        const hints = hintRecords?.records || [];
+
+        setInterval(() => {
+          const tipIndex = Math.floor(Math.random() * hints.length);
+          if (hints[tipIndex]?.hint) {
+            document.querySelector(".tip-content").textContent =
+              hints[tipIndex].hint;
+          }
+        }, 4000);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    fetchTips();
+
+    // connection lost modal
+    function onDispatchEvent({ eventName, eventObj } = {}) {
+      console.log(eventObj);
+      const event = new CustomEvent(eventName);
+      document.dispatchEvent(event);
+      const messageEvent = new MessageEvent("message", {
+        data: eventObj,
+      });
+      window.dispatchEvent(messageEvent);
+    }
+
+    function retryLater() {
+      const eventName = CUSTOM_EVENTS.SDK_CONNECTION_FAILED;
+      const eventObj = { name: eventName };
+
+      onDispatchEvent({ eventName, eventObj });
+    }
+
+    function retryNow() {
+      checkRealInternetAccess();
+    }
+
+    function fetchWithTimeout(resource, options = {}, timeout = 3000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+
+      return fetch(resource, {
+        ...options,
+        signal: controller.signal,
+      }).finally(() => clearTimeout(id));
+    }
+
+    const statusEl = document.getElementById("connection-lost-modal-overlay");
+    statusEl.style.display = "none";
+
+    async function checkRealInternetAccess() {
+      if (!navigator.onLine) return false;
+      if (hasGameLoaded || !isGameWindowVisible) return true;
+
+      try {
+        await fetchWithTimeout("https://clients3.google.com/generate_204", {
+          method: "GET",
+          cache: "no-store",
+          mode: "no-cors",
+        });
+
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function getCurrentScreenOrientation() {
+      const orientation = screen.orientation.type;
+      if (
+        orientation === SCREEN_ORIENTATIONS.LANDSCAPE_PRIMARY ||
+        orientation === SCREEN_ORIENTATIONS.LANDSCAPE_SECONDARY
+      ) {
+        return ORIENTATIONS.LANDSCAPE;
+      } else if (
+        orientation === SCREEN_ORIENTATIONS.PORTRAIT_PRIMARY ||
+        orientation === SCREEN_ORIENTATIONS.PORTRAIT_SECONDARY
+      ) {
+        return ORIENTATIONS.PORTRAIT;
+      }
+      return orientation;
+    }
+
+    function checkIsCorrectOrientation() {
+      return (
+        !acceptedScreenOrientation ||
+        acceptedScreenOrientation === getCurrentScreenOrientation()
+      );
+    }
+
+    async function updateInternetAccessStatus() {
+      const isCorrectScreenOrientation = checkIsCorrectOrientation();
+
+      if (
+        !isOnCorrectPlatform ||
+        !isCorrectScreenOrientation ||
+        hasGameLoaded
+      )
+        return;
+
+      const online = await checkRealInternetAccess();
+      statusEl.style.display = online ? "none" : "flex";
+      bottomContentEl.style.display = online ? "flex" : "none";
+    }
+
+    updateInternetAccessStatus();
+
+    window.addEventListener("online", updateInternetAccessStatus);
+    window.addEventListener("offline", updateInternetAccessStatus);
+
+    const internetAccessIntervalId = setInterval(
+      updateInternetAccessStatus,
+      5000
+    );
+
+    if (hasGameLoaded) {
+      clearInterval(internetAccessIntervalId);
+    }
+
+    const SESSION_DURATION = 240; // Testing for 4 mins, Default to 1800 
+    let sessionTimeLeft = SESSION_DURATION; //30 mins
+    let sessionTimerInterval;
+
+    // wrong platform
+    function onWrongPlatformGameExit() {
+      const eventName = CUSTOM_EVENTS.SDK_WRONG_PLATFORM;
+      const eventObj = {
+        name: eventName,
+        data: {
+          currentPlatform,
+          recommendedPlatform: acceptedPlatform,
+        },
       };
 
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
+      onDispatchEvent({
+        eventName,
+        eventObj,
+      });
+    }
 
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
+    const wrongPlatformEl = document.getElementById(
+      "switch-to-mobile-modal-overlay"
+    );
+    const platformAutoExitWrapperEl = document.getElementById(
+      "platform-auto-exit-wrapper"
+    );
+    const wrongPlatormHeadingEl = document.getElementById(
+      "wrong-plaform-heading"
+    );
+    const wrongPlatfromSubheadEl = document.getElementById(
+      "wrong-plaform-subhead"
+    );
+    platformAutoExitWrapperEl.style.display = isBattleGame ? "flex" : "none";
+    wrongPlatormHeadingEl.textContent =
+      acceptedPlatform === PLATFORMS.DESKTOP
+        ? "switch to Desktop to play"
+        : "switch to Mobile to play";
+    wrongPlatfromSubheadEl.textContent =
+      acceptedPlatform === PLATFORMS.DESKTOP
+        ? "This game only works on desktop"
+        : "This game only works on mobile";
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+    if (!isOnCorrectPlatform) {
+      bottomContentEl.style.display = "none";
+      wrongPlatformEl.style.display = "flex";
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
+      const platformTimerEl = document.getElementById(
+        "platform-auto-exit-timer"
+      );
 
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
+      let timeLeft = sessionTimeLeft === SESSION_DURATION ? 120 : SESSION_DURATION;
+      let timerInterval;
 
+      const updateTimer = () => {
+        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+        const seconds = String(timeLeft % 60).padStart(2, "0");
+        platformTimerEl.textContent = `00:${minutes}:${seconds}`;
 
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "1080px";
-        canvas.style.height = "1920px";
+        if (timeLeft === 0) {
+          clearInterval(timerInterval);
+          onWrongPlatformGameExit();
+        }
+
+        timeLeft--;
+      };
+
+      if (isBattleGame) {
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+    } else {
+      bottomContentEl.style.display = "flex";
+      wrongPlatformEl.style.display = "none";
+    }
+
+    //wrong screen orientation
+    const acceptedOrientationEl = document.getElementById(
+      "accepted-orientation"
+    );
+    const rotateScreenImgEl = document.getElementById("rotate-screen-img");
+    const wrongOrientationTimerEl = document.getElementById(
+      "wrong-orientation-exit-timer"
+    );
+    const wrongOrientationEl = document.getElementById(
+      "switch-orientation-modal-overlay"
+    );
+    const wrongOrientationAutoExitWrapperEl = document.getElementById(
+      "orientation-auto-exit-wrapper"
+    );
+    const timerTextEl = document.getElementById("timer-text");
+    const orientationExitCtaWrapper = document.getElementById(
+      "orientation-exit-cta-wrapper"
+    );
+
+    // let timeLeft = hasGameLoaded ? sessionTimeLeft : 120;
+    let timeLeft = 120;
+    let timerInterval;
+
+    const wrongPlatformImgEl = document.getElementById("wrong-platform-img");
+    if (acceptedPlatform === PLATFORMS.DESKTOP) {
+      wrongPlatformImgEl.src = "TemplateData/switch-mobile-desktop.svg";
+    } else {
+      wrongPlatformImgEl.src = "TemplateData/switch-desktop-mobile.svg";
+    }
+
+    function handleOrientation() {
+      clearInterval(timerInterval);
+      const isCorrectScreenOrientation = checkIsCorrectOrientation();
+
+      if (!isOnCorrectPlatform) {
+        wrongOrientationEl.style.display = "none";
+        return;
       }
 
-      document.querySelector("#unity-loading-bar").style.display = "block";
+      if (isCorrectScreenOrientation) {
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+        if (unityCanvasEl) unityCanvasEl.style.display = "block";
 
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+        bottomContentEl.style.display = "flex";
+        wrongOrientationEl.style.display = "none";
+        // window.dispatchEvent(new Event("focus"));
+        clearInterval(timerInterval);
+        if (
+          hasGameInitBeenStopped &&
+          !hasGameLoaded &&
+          !window?.unityInstance
+        ) {
+          location.reload();
+          // initializeUnityGame();
+        }
+        return;
+      }
 
-      document.body.appendChild(script);
+      wrongOrientationEl.style.display = "flex";
+      pauseUnityGame();
 
-    </script>
-  </body>
+      if (hasGameLoaded) {
+        timerTextEl.textContent = "Game session ends in";
+        orientationExitCtaWrapper.style.display = "none";
+      } else {
+        timerTextEl.textContent = "Auto exits in";
+        orientationExitCtaWrapper.style.display = "block";
+      }
+
+      const currentScreenOrientation = getCurrentScreenOrientation();
+
+      if (acceptedScreenOrientation) {
+        acceptedOrientationEl.textContent =
+          acceptedScreenOrientation === ORIENTATIONS.LANDSCAPE
+            ? ORIENTATIONS.LANDSCAPE
+            : ORIENTATIONS.PORTRAIT;
+        if (currentScreenOrientation !== acceptedScreenOrientation) {
+          if (unityCanvasEl) {
+            unityCanvasEl.style.display = "none";
+            pauseUnityGame();
+            window.dispatchEvent(new Event("blur"));
+          }
+          bottomContentEl.style.display = "none";
+          rotateScreenImgEl.src =
+            acceptedScreenOrientation === ORIENTATIONS.LANDSCAPE
+              ? "TemplateData/landscape-only.gif"
+              : "TemplateData/portrait-only.gif";
+
+          const updateTimer = () => {
+            const minutes = String(
+              hasGameLoaded
+                ? Math.floor(sessionTimeLeft / 60)
+                : Math.floor(timeLeft / 60)
+            ).padStart(2, "0");
+            const seconds = String(
+              hasGameLoaded ? sessionTimeLeft % 60 : timeLeft % 60
+            ).padStart(2, "0");
+            wrongOrientationTimerEl.textContent = `00:${minutes}:${seconds}`;
+
+            if (!hasGameLoaded && timeLeft === 0) {
+              clearInterval(timerInterval);
+              onWrongOrientationGameExit();
+            }
+            if (hasGameLoaded && sessionTimeLeft === 0) {
+              clearInterval(timerInterval);
+              timerInterval = null;
+              onSessionTimeoutGameExit();
+            }
+
+            timeLeft--;
+          };
+
+          if (isBattleGame) {
+            updateTimer();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+          } else {
+            wrongOrientationAutoExitWrapperEl.style.display = "none";
+            clearInterval(timerInterval);
+          }
+        } else {
+          if (unityCanvasEl) unityCanvasEl.style.display = "block";
+          bottomContentEl.style.display = "flex";
+          wrongOrientationEl.style.display = "none";
+          // window.dispatchEvent(new Event("focus"));
+          clearInterval(timerInterval);
+          if (
+            hasGameInitBeenStopped &&
+            !hasGameLoaded &&
+            !window?.unityInstance
+          ) {
+            location.reload();
+            // initializeUnityGame();
+          }
+        }
+      }
+    }
+
+    screen.orientation.addEventListener("change", handleOrientation);
+    handleOrientation();
+
+    function onWrongOrientationGameExit() {
+      const eventName = CUSTOM_EVENTS.SDK_WRONG_ORIENTATION;
+      const eventObj = { name: eventName };
+
+      onDispatchEvent({ eventName, eventObj });
+    }
+
+    function onSessionTimeoutGameExit() {
+      const eventName = CUSTOM_EVENTS.SDK_SESSION_TIMEOUT;
+      const eventObj = { name: eventName };
+
+      onDispatchEvent({
+        eventName: CUSTOM_EVENTS.SDK_SESSION_TIMEOUT,
+        eventObj,
+      });
+    }
+
+    function startSessionCountdown() {
+      const updateTimer = () => {
+        console.log(sessionTimeLeft);
+        if (sessionTimeLeft === 0) {
+          clearInterval(sessionTimerInterval);
+          sessionTimerInterval = null;
+
+          if (hasGameStarted) {
+            onSessionTimeoutGameExit();
+          } else {
+            onWrongPlatformGameExit();
+          }
+        }
+        sessionTimeLeft--;
+      };
+
+      if (isBattleGame) {
+        updateTimer();
+        clearInterval(sessionTimerInterval);
+        sessionTimerInterval = setInterval(updateTimer, 1000);
+      }
+    }
+
+    function markGameLoaded() {
+      hasGameLoaded = true;
+      hasGameStarted = false;
+      clearInterval(sessionTimerInterval);
+      sessionTimeLeft = SESSION_DURATION;
+      startSessionCountdown();
+    }
+
+    function markGameStarted() {
+      hasGameStarted = true;
+      clearInterval(sessionTimerInterval);
+      sessionTimeLeft = SESSION_DURATION;
+      startSessionCountdown();
+    }
+
+    window.startSessionCountdown = startSessionCountdown;
+    window.markGameLoaded = markGameLoaded;
+    window.markGameStarted = markGameStarted;
+
+    const progressBar = document.querySelector(".progress-bar-fill");
+    const canvas = document.querySelector("canvas");
+    const container = document.querySelector(".container");
+
+    canvas.style.display = "block";
+
+    // ========================
+    // Unity Initialization
+    // ========================
+    async function initializeUnityGame() {
+      const isCorrectScreenOrientation = checkIsCorrectOrientation();
+      const canvas = document.querySelector("#unity-canvas");
+      const progressBar = document.querySelector(".progress-bar-fill");
+      const glintEl = document.querySelector(".glint");
+      const progressBarContainerEl = document.querySelector(
+        ".progress-bar-container"
+      );
+      const progressBarBorderEl = document.querySelector(
+        ".progress-bar-border"
+      );
+      var config = {
+        arguments: [],
+        dataUrl: "Build/webgl version.data.gz",
+        frameworkUrl: "Build/webgl version.framework.js.gz",
+        codeUrl: "Build/webgl version.wasm.gz",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Hyper",
+        productName: "DotDash",
+        productVersion: "1.0",
+      };
+
+      config.matchWebGLToCanvasSize = false;
+      config.devicePixelRatio = window.devicePixelRatio || 1;
+
+      try {
+        const canvasParent = canvas.parentElement || document.documentElement;
+        if (canvasParent.requestFullscreen) {
+          await canvasParent.requestFullscreen();
+        } else if (canvasParent.webkitRequestFullscreen) {
+          await canvasParent.webkitRequestFullscreen();
+        } else if (canvasParent.msRequestFullscreen) {
+          await canvasParent.msRequestFullscreen();
+        }
+
+        if (
+          screen.orientation &&
+          screen.orientation.lock &&
+          acceptedScreenOrientation
+        ) {
+          await screen.orientation.lock(acceptedScreenOrientation);
+        }
+      } catch (e) {
+        console.warn("Fullscreen or orientation lock failed:", e);
+      }
+
+      try {
+        const unityInstance = await createUnityInstance(
+          canvas, config,
+          (progress) => {
+            requestAnimationFrame(() => {
+              const widthPercent = Math.round(progress * 100) + "%";
+              progressBar.style.width = widthPercent;
+              progressBarBorderEl.style.width = "100%";
+              if (progress * 100 >= 50) {
+                glintEl.classList.add("visible");
+              } else {
+                glintEl.classList.remove("visible");
+              }
+            });
+          }
+        );
+
+        window.unityInstance = unityInstance;
+        await fetchPublicKey();
+
+        requestAnimationFrame(() => {
+          handleUnityLoaded();
+        });
+      } catch (err) {
+        console.error("Unity initialization failed:", err);
+        alert("Failed to load game: " + err.message);
+      }
+    }
+
+    async function fetchPublicKey() {
+      try {
+        const response = await fetch(
+          "https://api.dev.hypergames.app/encryption/public-key"
+        );
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
+        window.publicKey = normalizeKey(await response.text());
+        //console.log('Public Key stored:', window.publicKey);
+      } catch (err) {
+        console.error("Failed to fetch public key:", err);
+      }
+    }
+
+    window.splitIntoChunks = function (data) {
+      try {
+        const dataString = typeof data === 'string' ? data : JSON.stringify(data);
+        const chunks = [];
+        const dataBuffer = forge.util.encodeUtf8(dataString);
+
+        for (let i = 0; i < dataBuffer.length; i += 190) {
+          chunks.push(dataBuffer.slice(i, i + 190));
+        }
+
+        console.log("Successful, chunks: ", chunks);
+
+        return chunks;
+      } catch (error) {
+        console.error("splitIntoChunks error:", error);
+        return [];
+      }
+    };
+
+    function normalizeKey(key) {
+      return key
+        .trim()
+        .replace(/^["']|["']$/g, "")
+        .replace(/\\n/g, "\n");
+    }
+
+    function handleUnityLoaded() {
+      document.body.classList.add("unity-loaded");
+
+      setTimeout(() => {
+        document
+          .querySelectorAll(
+            ".loading-text, .progress-bar-container, .hint-box, .logo"
+          )
+          .forEach((el) => el.remove());
+
+        clearInterval(window._HYPER_HINT_INTERVAL_ID);
+        clearInterval(window._HYPER_DOT_INTERVAL_ID);
+      }, 500);
+    }
+
+    function pauseUnityGame() {
+      if (window.unityInstance) {
+        unityInstance.SendMessage("HyperSDKSingleton", "PauseGame");
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        isGameWindowVisible = false;
+        pauseUnityGame();
+      } else {
+        isGameWindowVisible = true;
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const isCorrectScreenOrientation = checkIsCorrectOrientation();
+      if (!isOnCorrectPlatform || !isCorrectScreenOrientation) {
+        hasGameInitBeenStopped = true;
+        return;
+      }
+      //? Start Unity
+      initializeUnityGame();
+    });
+  </script>
+</body>
+
 </html>
